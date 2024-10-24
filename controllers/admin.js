@@ -13,18 +13,19 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
+  req.user.createProduct({
     title: title,
     price: price,
     imageUrl: imageUrl,
-    description: description
-  }).then(result => {
-    console.log(result);
-    console.log('created Product');
-    res.redirect('/admin/products')
-  }).catch(err => {
-    console.log(err);
+    description: description,
   })
+    .then(result => {
+      console.log(result);
+      console.log('created Product');
+      res.redirect('/admin/products')
+    }).catch(err => {
+      console.log(err);
+    })
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -33,8 +34,12 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findByPk(prodId)
-    .then(product => {
+  req.user.getProducts({where: {
+    id: prodId
+  }})
+  // Product.findByPk(prodId)
+    .then(products => {
+      const product = products[0];
       if (!product) {
         return res.redirect('/');
       }
@@ -68,11 +73,12 @@ exports.postEditProduct = (req, res, next) => {
       console.log('Updated Product');
     })
     .catch();
-    res.redirect('/admin/products');
+  res.redirect('/admin/products');
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll().then(products => {
+  req.user.getProducts()
+  .then(products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
@@ -86,12 +92,12 @@ exports.getProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findByPk(prodId)
-  .then(product => {
-    return product.destroy();
-  }).then(result => {
-    console.log('Destroyed product')
-  }).catch(err => {
-    console.log(err)
-  });  
+    .then(product => {
+      return product.destroy();
+    }).then(result => {
+      console.log('Destroyed product')
+    }).catch(err => {
+      console.log(err)
+    });
   res.redirect('/admin/products');
 };
