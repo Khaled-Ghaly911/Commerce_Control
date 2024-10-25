@@ -23,6 +23,7 @@ const { name } = require('ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Default User
 app.use((req, res, next) => {
     User.findByPk(1)
         .then(user => {
@@ -49,6 +50,7 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
+    // .sync({ alter: true })
     .sync()
     .then(result => {
         return User.findByPk(1);
@@ -56,12 +58,14 @@ sequelize
     })
     .then(user => {
         if (!user) {
-            return User.create({ name: 'Khaled', email: 'hello@yahoo.com' });
+            return User.create({ name: 'Khaled', email: 'hello@Gmail.com' });
         }
-        return user
+        return user;
     })
     .then(user => {
         // console.log(user);
+        return user.createCart();
+    }).then(cart => {
         app.listen(4000);
     })
     .catch(err => {
