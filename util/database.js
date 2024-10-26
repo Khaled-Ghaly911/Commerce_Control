@@ -6,3 +6,5 @@ const sequelize = new Sequelize('commerce_app', 'root', '12345678', {
 });
 
 module.exports = sequelize;
+
+
