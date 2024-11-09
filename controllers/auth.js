@@ -5,6 +5,8 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const { error } = require('console');
 
+const { validationResult } = require('express-validator/lib/validation-result');
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: "khaledghaly000@gmail.com",
@@ -87,6 +89,15 @@ exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
+    const errors = validationResult(req);
+    // console.log(error.array())
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/signup', {
+            path: '/signup',
+            pageTitle: 'Signup',
+            errorMessage: errors.array()[0].msg
+        });
+    }
     User.findOne({ email: email })
         .then(userDoc => {
             if (userDoc) {
@@ -206,16 +217,16 @@ exports.postNewPassword = (req, res, next) => {
         resetTokenExpiration: { $gt: Date.now() },
         _id: userId
     }).then(user => {
-            bcrypt.hash(newPassword, 12)
-                .then(hashedPassword => {
-                    user.password = hashedPassword;
-                    user.resetToken = undefined;
-                    user.resetTokenExpiration = undefined;
-                    return user.save()
-                }).then(result => {
-                    res.redirect('/login');
-                })
-        })
+        bcrypt.hash(newPassword, 12)
+            .then(hashedPassword => {
+                user.password = hashedPassword;
+                user.resetToken = undefined;
+                user.resetTokenExpiration = undefined;
+                return user.save()
+            }).then(result => {
+                res.redirect('/login');
+            })
+    })
         .catch(err => {
             console.log(err);
         })
