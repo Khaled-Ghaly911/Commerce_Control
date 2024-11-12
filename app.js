@@ -17,7 +17,7 @@ const sessionMiddleware = require('./middleWare/session');
 const userMiddleware = require('./middleWare/user');
 const errorMiddleware = require('./middleWare/error');
 
-const MONGODB_URI = 'mongodb+srv://khaledghaly000:OYvOq3XIriylQ16A@cluster0.s5xgw.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = 'mongodb+srv://khaledghaly000:dI42unaOVTuDuQ22@cluster0.s5xgw.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0';
 
 const app = express();
 
