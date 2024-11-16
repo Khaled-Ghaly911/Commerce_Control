@@ -18,10 +18,8 @@ router.post('/add-product', isAuth,
     [
         body('title')
         .isString()
-        .isLength({ max: 3 })
+        .isLength({ min: 3 })
             .trim(),
-        body('imageUrl')
-            .isURL(),
         body('price', 'Enter a valid number for the price.')
             .isFloat()
         ,
