@@ -35,13 +35,13 @@ router.post('/edit-product', isAuth,
     [
         body('title')
             .isString()
-            .isLength({ max: 3 })
+            .isLength({ min: 3 })
             .trim(),
         body('price', 'Enter a valid number for the price.')
             .isFloat()
         ,
         body('description', 'Enter a description no more than 250 characters')
-            .isLength({ min: 5, max: 250 }),
+            .isLength({ min: 5, max: 400 }),
 
     ]
     , adminController.postEditProduct);
